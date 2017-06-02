@@ -16,7 +16,7 @@ bower install macy
 
 ## Usage
 ```javascript
-Macy.init({
+var macy_instance = Macy({
   // See below for all available options.
 });
 ```
@@ -48,7 +48,7 @@ Adjust the margin between columns with a pixel value. Don’t forget you can sti
 *Default: `false`*
 If set to true, Macy will wait for all images on the page to load before running. Set to `false` by default, it will run every time an image loads.
 
-##### **breakpoints**
+##### **breakAt**
 
 *Default: `None`*
 This array allows you to specify how the total number of columns will change based on the width of the viewport. Setting an option to `780: 3` for example will adjust the column count to 3 when the viewport is <= 780px.
@@ -59,13 +59,13 @@ If the column is set to one then Macy will remove all styling to leave you to st
 
 ## Methods
 
-##### **init**
+##### **Macy**
 *Parameters: `{Object} args - required`*
 
 This is the initializing function. The function takes an object of properties listed above. The only required property is container which would be the *selector* for the element that contains all the elements you want to be layed out:
 
 ```javascript
-Macy.init({
+var macy = Macy({
     container: '#macy-container',
     trueOrder: false,
     waitForImages: false,
@@ -80,13 +80,15 @@ Macy.init({
 });
 ```
 
+From this point on whenever 'Macy' is specified it is referencing the variable you assign macy to when making the initial call.
+
 ##### **recalculate**
-*Parameters: `None`*
+*Parameters: `{Boolean} refresh - can be null` & `{Boolean} loaded -can be null` *
 
 When called this recalculates the entire layout, this becomes useful if you just used ajax to pull in more content:
 
 ```javascript
-Macy.recalculate();
+macy_instance.recalculate();
 ```
 
 ##### **onImageLoad**
@@ -96,30 +98,30 @@ Macy.recalculate();
 onImageLoad is a method used to do something each time and image loads or after all images have been loaded. This helps when using Ajax to make sure the layout is worked out correctly when images are loading. Using this in conjunction with the recalculate function makes your layouts look great no matter how long it takes to load in your images:
 
 ```javascript
-Macy.onImageLoad(function () {
+macy_instance.onImageLoad(function () {
   console.log('Every time an image loads I get fired');
-  Macy.recalculate();
+  macy_instance.recalculate();
 }, function () {
   console.log('I only get called when all images are loaded');
-  Macy.recalculate();
+  macy_instance.recalculate();
 });
 ```
 
 If you only require it to run once all the images have loaded you can acheive this by passing null as the first parameter:
 
 ```javascript
-Macy.onImageLoad(null, function () {
+macy_instance.onImageLoad(null, function () {
   console.log('I only get called when all images are loaded');
-  Macy.recalculate();
+  macy_instance.recalculate();
 });
 ```
 
 If you only require the during function to run then only pass it one function:
 
 ```javascript
-Macy.onImageLoad(function () {
+macy_instance.onImageLoad(function () {
   console.log('Every time an image loads I get fired');
-  Macy.recalculate();
+  macy_instance.recalculate();
 });
 ```
 
@@ -129,11 +131,20 @@ Macy.onImageLoad(function () {
 Remove does exactly what it says on the tin, it removes all styling and event listeners that Macy added to the DOM:
 
 ```javascript
-Macy.remove();
+macy_instance.remove();
+```
+
+##### **reInit**
+*Parameters: `None`*
+
+Reinitialises the current macy instance;
+
+```javascript
+macy_instance.reInit();
 ```
 
 ---
 
 ## *Notes*
-- Currently only one instance of macy is supported per page. But that will be subject to change in later versions
-- Browser support for all major browsers including IE9+
+- Browser support for all major browsers including IE11+
+- To support IE10 a dataset polyfill will have to be added
